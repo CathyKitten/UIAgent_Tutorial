@@ -100,6 +100,19 @@ class VideoStructure0709(BaseModel):
 class JudgeStructure(BaseModel):
     judge: bool
 
+class JudgeStructure2(BaseModel):
+    Clear: bool
+    Conciseness: bool
+    Completeness: bool
+    Sequential_Order: bool
+
+
+class JudgeStructure3(BaseModel):
+    Clear: bool
+    Conciseness: bool
+    Completeness: bool
+    Sequential_Order: bool
+
 class DocumentStructure(BaseModel):
     task_title: str
     steps: Dict[str, Step2] = Field(default_factory=dict)
@@ -113,8 +126,8 @@ class TitleStructure(BaseModel):
     sample_opening_line: str
 
 if __name__ == "__main__":
-    jsonfile = generate_json_schema(DocumentStructure)
+    jsonfile = generate_json_schema(JudgeStructure2)
     print(jsonfile)
-    file_path = "../data/steps_schema_document.json"
+    file_path = "../data/steps_schema_questionnaire.json"
     with open(file_path, "w") as file:
         json.dump(jsonfile, file, indent=4)

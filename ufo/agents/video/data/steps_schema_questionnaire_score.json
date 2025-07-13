@@ -1,0 +1,44 @@
+{
+    "description": "\u5b9a\u7fa9\u4e94\u500b\u8a55\u5206\u7dad\u5ea6\u7684\u8cc7\u6599\u6a21\u578b\uff0c\u7528\u65bc\u898f\u7bc4 JSON \u8f38\u51fa\u3002",
+    "properties": {
+        "clarity": {
+            "description": "Score for clarity, from 1 to 5.",
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer"
+        },
+        "conciseness": {
+            "description": "Score for conciseness, from 1 to 5.",
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer"
+        },
+        "completeness": {
+            "description": "Score for completeness, from 1 to 5.",
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer"
+        },
+        "sequential_order": {
+            "description": "Score for sequential order, from 1 to 5.",
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer"
+        },
+        "text-image_mapping": {
+            "description": "Score for text-image mapping, from 1 to 5.",
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer"
+        }
+    },
+    "required": [
+        "clarity",
+        "conciseness",
+        "completeness",
+        "sequential_order",
+        "text-image_mapping"
+    ],
+    "type": "object",
+    "additionalProperties": false
+}

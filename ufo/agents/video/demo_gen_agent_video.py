@@ -225,6 +225,11 @@ if __name__ == "__main__":
         with open(video_json_path, "w", encoding="utf-8") as f:
             json.dump(image_step_path_dict_video, f, ensure_ascii=False, indent=2)
 
+        request_output_path = os.path.join(output_folder, "request.json")
+        with open(request_output_path, "w", encoding="utf-8") as f:
+            request_dict={"request":request}
+            json.dump(request_dict, f, ensure_ascii=False, indent=2)
+
 
 
         output_file_video = os.path.join(output_folder, "video_demo.mp4")

@@ -164,6 +164,10 @@ if __name__ == "__main__":
 
         # 生成两个输出文件的完整路径
         step_output_path = os.path.join(output_folder, "document_demo_step.json")
+        request_output_path = os.path.join(output_folder, "request.json")
+        with open(request_output_path, "w", encoding="utf-8") as f:
+            request_dict={"request":request}
+            json.dump(request_dict, f, ensure_ascii=False, indent=2)
 
         with open('./ufo/agents/video/data/steps_schema_document.json', 'r') as file:
             schema = json.load(file)
