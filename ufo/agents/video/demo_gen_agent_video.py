@@ -171,7 +171,7 @@ if __name__ == "__main__":
 
 
         # 创建 output_folder 路径：log_path 下的 "video_demo"
-        output_folder = os.path.join(log_path, "video_demo_try_0713")
+        output_folder = os.path.join(log_path, "video")
         os.makedirs(output_folder, exist_ok=True)  # 如果不存在就创建
 
         # 生成两个输出文件的完整路径
