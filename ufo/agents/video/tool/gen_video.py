@@ -1,8 +1,11 @@
+# pip install edge-tts
+# pip install moviepy
+
+
 import os
 import shutil
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-from gtts import gTTS
 import moviepy as mpy  # 保持原導入方式
 import textwrap
 from typing import List, Tuple

@@ -180,10 +180,10 @@ if __name__ == '__main__':
 
     # 1. 設定包含所有 log 子資料夾的大資料夾路徑
     #    程式會自動遍歷這個資料夾下的所有內容
-    main_folder_path = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\qabench\qabench\logs"
+    main_folder_path = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\2025_0712_qabench"
 
     # 2. 設定您的滑鼠圖示圖片的絕對路徑
-    cursor_image_path = "./mouse.png"
+    cursor_image_path = "./data/mouse.png"
 
     # --- 執行批次處理 ---
     process_batch_directory(main_folder_path, cursor_image_path)
