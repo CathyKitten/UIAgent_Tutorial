@@ -142,9 +142,8 @@ if __name__ == "__main__":
     )
 
     # 路径配置
-    base_path = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\qabench\qabench\logs\chunk1"
-    json_path = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\qabench\qabench\logs\completed_folders.json"
-
+    base_path = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\2025_0712_qabench"
+    json_path = os.path.join(base_path, "completed_folders.json")
     # 读取已完成的文件夹列表
     with open(json_path, 'r', encoding='utf-8') as f:
         completed_folders = json.load(f)

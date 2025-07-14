@@ -155,21 +155,14 @@ if __name__ == "__main__":
 
     # 路径配置
     base_path = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\2025_0712_qabench"
+    json_path = os.path.join(base_path, "completed_folders.json")
 
-    # 獲取 base_path 下的所有項目
-    try:
-        all_entries = os.listdir(base_path)
-    except FileNotFoundError:
-        print(f"錯誤: 找不到路徑 {base_path}。請檢查路徑是否正確。")
-        all_entries = []
+    # 读取已完成的文件夹列表
+    with open(json_path, 'r', encoding='utf-8') as f:
+        completed_folders = json.load(f)
 
-    # 過濾出資料夾
-    all_folders = [entry for entry in all_entries if os.path.isdir(os.path.join(base_path, entry))]
-
-    print(f"在 {base_path} 中找到 {len(all_folders)} 個資料夾準備處理。")
-
-    # 遍歷每個找到的資料夾
-    for folder_name in all_folders:
+    # 遍历每个文件夹
+    for folder_name in completed_folders:
         log_path = os.path.join(base_path, folder_name)
         if os.path.isdir(log_path):
             print(f"✅ 正在访问文件夹: {log_path}")
