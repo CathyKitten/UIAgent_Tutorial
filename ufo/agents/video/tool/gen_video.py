@@ -395,30 +395,55 @@ def create_clip_with_title_and_rolling_subtitles(
     # 此處的 base_image 是已經由主函數處理好的，符合尺寸要求的圖片
     background_frame.paste(base_image, (0, img_y_start))
 
+    # ★★★ 修改後的標題處理邏輯 ★★★
     if video_title:
-        title_max_width = video_width - 40
+        # 設定標題區域的最大寬度，左右各留 20px 的邊距
+        title_max_width = video_width - 5
+        current_font_size = title_font_size
+        final_title_font = None
+
+        # 循環調整字體大小，直到標題能在一行內放下
+        while current_font_size > 10:  # 設定最小字體為 10
+            try:
+                final_title_font = ImageFont.truetype(title_font_path, current_font_size)
+                # 獲取單行文本的總寬度
+                text_width = final_title_font.getlength(video_title)
+
+                # 如果寬度符合要求，則跳出循環
+                if text_width <= title_max_width:
+                    break
+            except IOError:
+                print(f"警告: 字體 '{title_font_path}' 在大小 {current_font_size} 時無法載入。")
+                final_title_font = ImageFont.load_default()
+                break  # 如果字體無法載入，則退出
+            except Exception as e:
+                print(f"錯誤: 獲取文本長度時出錯: {e}")
+                break
+
+            # 如果太寬，則減小字體大小並重試
+            current_font_size -= 2
+
+        if current_font_size <= 10 and final_title_font.getlength(video_title) > title_max_width:
+            print(f"警告: 標題 '{video_title}' 在最小字體下仍然過寬。")
+
+        # 計算繪製位置 (使其在灰色區域內水平和垂直居中)
         try:
-            avg_char_width = title_font.getlength("A") or title_font_size / 2
+            # Pillow >= 10.0.0, getbbox 更精確
+            bbox = draw.textbbox((0, 0), video_title, font=final_title_font)
+            text_w = bbox[2] - bbox[0]
+            text_h = bbox[3] - bbox[1]
+            # 計算垂直居中的y座標
+            title_y = (title_area_height - text_h) / 2
         except AttributeError:
-            avg_char_width = title_font.getsize("A")[0] or title_font_size / 2
+            # 舊版 Pillow
+            text_w, text_h = draw.textsize(video_title, font=final_title_font)
+            title_y = (title_area_height - text_h) / 2
 
-        wrap_width = max(1, int(title_max_width / avg_char_width))
-        initial_lines = textwrap.wrap(video_title, width=wrap_width)
-        num_lines = len(initial_lines)
+        title_x = (video_width - text_w) / 2
 
-        if num_lines > 1:
-            final_lines = _wrap_title_intelligently(video_title, num_lines)
-            wrapped_title = "\n".join(final_lines)
-        else:
-            wrapped_title = video_title
-
-        title_bbox = draw.multiline_textbbox((0, 0), wrapped_title, font=title_font, spacing=4, align="center")
-        title_w = title_bbox[2] - title_bbox[0]
-        title_h = title_bbox[3] - title_bbox[1]
-        title_x = (video_width - title_w) / 2
-        title_y = (img_y_start - title_h) / 2
-        draw.multiline_text((title_x, title_y), wrapped_title, font=title_font, fill=font_color, spacing=4,
-                            align="center")
+        # 使用 draw.text 繪製單行文本
+        draw.text((title_x, title_y), video_title, font=final_title_font, fill=font_color)
+    # ★★★ 修改結束 ★★★
 
     # --- 2. 處理動態字幕和音訊 ---
     max_text_width = video_width - 40
@@ -749,16 +774,17 @@ if __name__ == "__main__":
     # !! 請務必將此路徑修改為您電腦上的圖片實際路徑 !!
     #    可以使用一張較小的圖片來測試白色背景效果。
     initial_image_file = r"C:\Users\v-yuhangxie\Desktop\excel2.jpg"
+    initial_image_file_2 = r"C:\Users\v-yuhangxie\Desktop\excel3.jpg"
 
     # 3. 中間內容的資料 (使用相同圖片作為範例)
     image_data = {
-        initial_image_file: {
+        initial_image_file_2: {
             "voiceover_script": "Unlock more insightful data with our free, online, and collaborative spreadsheets.",
             "title": "Step 1: Introduction"
         },
         initial_image_file: {
             "voiceover_script": "This is the second part of our tutorial, where we explore advanced features.",
-            "title": "Step 2: Advanced Features"
+            "title": "Step 2: Advanced Features 111111111111111111111111111111122222222222222222222222222"
         }
     }
     # 4. 結尾句
