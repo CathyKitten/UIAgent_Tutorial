@@ -11,7 +11,7 @@ from ufo.agents.states.evaluaton_agent_state import EvaluatonAgentStatus
 from ufo.config.config import Config
 from ufo.prompter.demo_gen_prompter import DemoGenAgentPrompter
 from ufo.utils import json_parser, print_with_color, markdown_parser
-from ufo.agents.video.tool.get_request import extract_request_from_md
+from ufo.agents.video.tool.get_request import extract_and_clean_requests
 import os
 from ufo.agents.video.tool.gen_video import create_video_with_subtitles_and_audio
 
@@ -154,7 +154,7 @@ if __name__ == "__main__":
     )
 
     # 路径配置
-    base_path = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\2025_0712_qabench"
+    base_path = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\20250712_bing_search_completed"
     json_path = os.path.join(base_path, "completed_folders.json")
 
     # 读取已完成的文件夹列表
@@ -167,7 +167,7 @@ if __name__ == "__main__":
         if os.path.isdir(log_path):
             print(f"✅ 正在访问文件夹: {log_path}")
         md_file_path = os.path.join(log_path, "output.md")
-        request = extract_request_from_md(md_file_path)
+        request = extract_and_clean_requests(md_file_path)
 
 
         # 创建 output_folder 路径：log_path 下的 "video_demo"
@@ -216,7 +216,7 @@ if __name__ == "__main__":
             image_step_path_dict_video[path]={}
             voiceover_script=value['voiceover_script']
             title = value['title']
-            image_step_path_dict_video[path]['voiceover_script'] = f"Step{key}: {voiceover_script}"
+            image_step_path_dict_video[path]['voiceover_script'] = f"Step{i}: {voiceover_script}"
             image_step_path_dict_video[path]['title'] = f"Step{key}: {title}"
             i += 1
         path = os.path.join(log_path, f"action_step_final.png")
@@ -238,7 +238,12 @@ if __name__ == "__main__":
         output_audio_folder= os.path.join(output_folder, "audio")
 
         md_file_path = os.path.join(log_path, "output.md")
-        request = extract_request_from_md(md_file_path)
+        if not os.path.exists(md_file_path):
+            print(f"{md_file_path} 不存在，跳过")
+            continue
+
+        eval_log_file_path = os.path.join(log_path, "evaluation.log")
+        request = extract_and_clean_requests(eval_log_file_path)
 
 
         print("\n--- 開始創建帶字幕和配音的視頻 ---")

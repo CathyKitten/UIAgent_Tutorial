@@ -10,7 +10,7 @@ from ufo.agents.states.evaluaton_agent_state import EvaluatonAgentStatus
 from ufo.config.config import Config
 from ufo.prompter.demo_gen_prompter import DemoGenAgentPrompter
 from ufo.utils import print_with_color
-from ufo.agents.video.tool.get_request import extract_request_from_md
+from ufo.agents.video.tool.get_request import extract_and_clean_requests
 from ufo.agents.video.tool.gen_document_md import create_help_document
 from ufo.agents.video.tool.gen_document_html import create_html_document
 from ufo.agents.video.tool.gen_document_html_base64_pic import create_html_document_base64
@@ -142,7 +142,7 @@ if __name__ == "__main__":
     )
 
     # 路径配置
-    base_path = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\2025_0712_qabench"
+    base_path = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\20250712_bing_search_completed"
     json_path = os.path.join(base_path, "completed_folders.json")
     # 读取已完成的文件夹列表
     with open(json_path, 'r', encoding='utf-8') as f:
@@ -155,7 +155,10 @@ if __name__ == "__main__":
             print(f"✅ 正在访问文件夹: {log_path}")
 
         md_file_path = os.path.join(log_path, "output.md")
-        request = extract_request_from_md(md_file_path)
+        if not os.path.exists(md_file_path):
+            print(f"{md_file_path} 不存在，跳过")
+            continue
+        request = extract_and_clean_requests(md_file_path)
 
         # 创建 output_folder 路径：log_path 下的 "document"
         output_folder = os.path.join(log_path, "document")
@@ -187,11 +190,13 @@ if __name__ == "__main__":
         path = os.path.join(log_path, f"action_step1.png")
         text = ["input file", "Let's see how to do this together!"]
         image_step_path_dict_document[path] = text
+        i=1
         for key, value in image_step_dict["steps"].items():
             path = os.path.join(log_path, f"action_step{key}_selected_controls_mouse.png")
             written_explanation = value['written_explanation']
             title = value['title']
-            image_step_path_dict_document[path] = [f"step{key}: {title}", f"{written_explanation}"]
+            image_step_path_dict_document[path] = [f"step{i}: {title}", f"{written_explanation}"]
+            i=i+1
         path = os.path.join(log_path, f"action_step_final.png")
         image_step_path_dict_document[path] = ["output file", "You've now successfully completed the task!"]
 
