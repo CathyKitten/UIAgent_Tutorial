@@ -84,8 +84,8 @@ def process_and_evaluate_steps(root_directory, model_name,schema):
                     continue
 
                 task_overview=f'''## Task Overview
-You are an Excel expert. You are given an original request along with the corresponding instructional video.
-Your task is to assign a score from 1 to 5 for each of the five criteria, based on following definitions and scoring guidelines.:
+You are an evaluation system. You are given a request about an excel task along with the corresponding instructional video.
+Your task is to assign a score from 1 to 5 for each of the five criteria, based on following definitions and scoring guidelines:
 
 <1> Clarity
 Each instructional video step is clearly and explicitly described, with no ambiguity.
