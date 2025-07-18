@@ -208,7 +208,7 @@ if __name__ == '__main__':
 
     # Specify the model you want to use
     judge_model_name = 'dev-gpt-41-longco-2025-04-14'
-    judge_model_name ="dev-gpt-45-preview"# Or any other available model
+    # judge_model_name ="dev-gpt-45-preview"# Or any other available model
     schema="./data/steps_schema_questionnaire_score.json"
 
     if not os.path.isdir(root_folder):

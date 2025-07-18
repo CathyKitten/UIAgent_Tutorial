@@ -186,6 +186,7 @@ if __name__ == "__main__":
         task_title = "Help Document: " + task_title
 
         # 构建包含完整源图片路径的字典，用于HTML生成
+
         image_step_path_dict_document = {}
         path = os.path.join(log_path, f"action_step1.png")
         text = ["input file", "Let's see how to do this together!"]

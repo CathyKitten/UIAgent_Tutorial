@@ -5,12 +5,12 @@ system: |-
   You are an Excel expert. You are given a user request, along with operation logs and screenshots from an agent performing Excel actions via a GUI.
   We need your help to turn this log into an instructional document. Your specific tasks are as follows:
   1. Generate an task title for the document and output to the "task_title" field. 
-  2. Please summarize a title for each step in the log and generate a written explanation of this step to be included in the instructional document.
+  2. Select the valid and correct steps, ignoring any duplicate or incorrect actions. Then summarize a title for each selected step in the log and generate a written explanation of this step to be included in the instructional document.
   The answer should be a dictionary and output to the "steps" field. 
-  The format of the dictionary is as follows, "step_number" can be obtained from the "Step" field in the Execution Trajectory:
+  The format of the dictionary is as follows, "selected_step_number" can be obtained from the "Step" field in the Execution Trajectory:
   {{
-  "step_number":{{"title":...,"written_explanation":...}},
-  "step_number":{{"title":...,"written_explanation":...}},
+  "selected_step_number":{{"title":...,"written_explanation":...}},
+  "selected_step_number":{{"title":...,"written_explanation":...}},
   ...
   }}
   
@@ -35,12 +35,12 @@ system: |-
   {{
   "task_title":...,
   "steps":{{
-  "step_number":{{"title":...,"written_explanation":...}},
-  "step_number":{{"title":...,"written_explanation":...}},
+  "selected_step_number":{{"title":...,"written_explanation":...}},
+  "selected_step_number":{{"title":...,"written_explanation":...}},
   ...
   }}
   }}
-  - Replace step_number with the actual numbers of the steps.
+  - Replace selected_step_number with the actual numbers of the steps.
   - Your final output must **only** include the dictionary — do not add any other text or explanations.
   
   ## Tips

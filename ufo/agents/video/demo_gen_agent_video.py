@@ -167,6 +167,9 @@ if __name__ == "__main__":
         if os.path.isdir(log_path):
             print(f"✅ 正在访问文件夹: {log_path}")
         md_file_path = os.path.join(log_path, "output.md")
+        if not os.path.exists(md_file_path):
+            print(f"{md_file_path} 不存在，跳过")
+            continue
         request = extract_and_clean_requests(md_file_path)
 
 
