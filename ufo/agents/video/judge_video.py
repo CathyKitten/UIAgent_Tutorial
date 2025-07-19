@@ -56,7 +56,7 @@ def process_and_evaluate_steps_object(root_directory, model_name,schema):
         # We are looking for the specific file 'video_step.json'
         if 'video_step.json' in files:
             # Check if the parent directory is named 'video_demo'
-            if os.path.basename(root) == 'video_demo':
+            if os.path.basename(root) == 'video':
                 json_path = os.path.join(root, 'video_step.json')
                 request_path=os.path.join(root, 'request.json')
                 # request_path=r"C:\Users\v-yuhangxie\OneDrive - Microsoft\qabench\qabench\logs\chunk1\add_a_special_character_or_symbol_4f364db0-912b-46b3-8282-2d8dd49c336a\document\request.json"
@@ -210,6 +210,7 @@ Here is the operation logs and screenshots:
                     try:
                         # Send the request and get the result
                         result_str = send_request_ufo(model_name, message, schema=schema_judge)
+                        time.sleep(30)
                         break
                     except Exception as e:
                         print_with_color(f"Error: {e}", "red")
@@ -386,6 +387,7 @@ Here is the operation logs and screenshots:
                     try:
                         # Send the request and get the result
                         result_str = send_request_ufo(model_name, message, schema=schema_judge)
+                        time.sleep(30)
                         break
                     except Exception as e:
                         print_with_color(f"Error: {e}", "red")
@@ -407,7 +409,7 @@ Here is the operation logs and screenshots:
 
 if __name__ == '__main__':
     # IMPORTANT: Set this to the root folder you want to scan.
-    root_folder = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\20250716_bing_search_completed"
+    root_folder = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\2025_0712_qabench_completed"
 
     # Specify the model you want to use
     judge_model_name = 'dev-gpt-41-longco-2025-04-14'
@@ -419,4 +421,4 @@ if __name__ == '__main__':
         print(f"Error: Root directory not found at '{root_folder}'")
     else:
         process_and_evaluate_steps_object(root_folder, judge_model_name,schema_object)
-        process_and_evaluate_steps_subject(root_folder, judge_model_name, schema_subject)
+        # process_and_evaluate_steps_subject(root_folder, judge_model_name, schema_subject)
