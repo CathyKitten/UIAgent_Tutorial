@@ -407,15 +407,16 @@ Here is the operation logs and screenshots:
 
 if __name__ == '__main__':
     # IMPORTANT: Set this to the root folder you want to scan.
-    root_folder = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\qabench\qabench\logs\chunk1"
+    root_folder = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\20250716_bing_search_completed"
 
     # Specify the model you want to use
     judge_model_name = 'dev-gpt-41-longco-2025-04-14'
     # judge_model_name ="dev-gpt-45-preview"# Or any other available model
-    schema="./data/steps_schema_questionnaire_score.json"
+    schema_object="./data/steps_schema_questionnaire_score_object.json"
+    schema_subject = "./data/steps_schema_questionnaire_score_subject.json"
 
     if not os.path.isdir(root_folder):
         print(f"Error: Root directory not found at '{root_folder}'")
     else:
-        process_and_evaluate_steps_object(root_folder, judge_model_name,schema)
-        process_and_evaluate_steps_subject(root_folder, judge_model_name, schema)
+        process_and_evaluate_steps_object(root_folder, judge_model_name,schema_object)
+        process_and_evaluate_steps_subject(root_folder, judge_model_name, schema_subject)
