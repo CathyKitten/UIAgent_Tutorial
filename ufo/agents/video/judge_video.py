@@ -244,7 +244,7 @@ def process_and_evaluate_steps_subject(root_directory, model_name,schema):
         # We are looking for the specific file 'video_step.json'
         if 'video_step.json' in files:
             # Check if the parent directory is named 'video_demo'
-            if os.path.basename(root) == 'video_demo':
+            if os.path.basename(root) == 'video':
                 json_path = os.path.join(root, 'video_step.json')
                 request_path=os.path.join(root, 'request.json')
                 # request_path=r"C:\Users\v-yuhangxie\OneDrive - Microsoft\qabench\qabench\logs\chunk1\add_a_special_character_or_symbol_4f364db0-912b-46b3-8282-2d8dd49c336a\document\request.json"
