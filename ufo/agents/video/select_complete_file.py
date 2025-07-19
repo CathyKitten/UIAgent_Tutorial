@@ -4,9 +4,9 @@ import shutil  # 1. 引入 shutil 模組
 
 # --- 設定路徑 ---
 # 來源路徑：包含所有待檢查子資料夾的根目錄
-base_path = r"C:\Users\v-yuhangxie\UFO_ssb_0708\logs\20250712_bing_search"
+base_path = r"C:\Users\v-yuhangxie\UFO_ssb_0708\logs\20250716_bing_search"
 # 目標路徑：將完成的資料夾複製到這裡
-destination_base_path = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\20250712_bing_search_completed"  # <--- 請修改成您要的目標路徑
+destination_base_path = r"C:\Users\v-yuhangxie\UFO_ssb_0708\logs\20250716_bing_search_complete"  # <--- 請修改成您要的目標路徑
 
 # --- 初始化 ---
 completed_folders = []

@@ -183,9 +183,9 @@ if __name__ == "__main__":
         with open('./ufo/agents/video/data/steps_schema_video.json', 'r') as file:
             schema = json.load(file)
 
-        results = gen_agent.generate(
-            request=request, log_path=log_path, output_path=step_output_path, eva_all_screenshots=True,schema=schema
-        )
+        # results = gen_agent.generate(
+        #     request=request, log_path=log_path, output_path=step_output_path, eva_all_screenshots=True,schema=schema
+        # )
 
 
         step_judge_output_path = os.path.join(output_folder, "step_judge.json")
@@ -199,89 +199,89 @@ if __name__ == "__main__":
         print("-----------------------------------")
 
 
-        # Windows用戶請確保此路徑有效
-        TITLE_FONT_PATH = 'C:/Windows/Fonts/arialbd.ttf'  # Arial (粗體)
-        SUBTITLE_FONT_PATH = 'C:/Windows/Fonts/arial.ttf'  # Arial (常規)
-
-        with open(step_output_path, 'r', encoding='utf-8') as f:
-            image_step_dict = json.load(f)
-
-
-
-        # 创建新字典，使用 i 从 1 开始编号
-        image_step_path_dict_video = {}
-        i = 1
-        path=os.path.join(log_path, f"action_step1.png")
-        text="Here’s the original Excel file that we’ll be working with."
-        image_step_path_dict_video[path]={"voiceover_script":text,"title":"Original Excel File"}
-        for key, value in image_step_dict["steps"].items():
-            path = os.path.join(log_path, f"action_step{key}_selected_controls_mouse.png")
-            image_step_path_dict_video[path]={}
-            voiceover_script=value['voiceover_script']
-            title = value['title']
-            image_step_path_dict_video[path]['voiceover_script'] = f"Step{i}: {voiceover_script}"
-            image_step_path_dict_video[path]['title'] = f"Step{key}: {title}"
-            i += 1
-        path = os.path.join(log_path, f"action_step_final.png")
-        image_step_path_dict_video[path]={"voiceover_script":"You've now successfully completed the task!","title":"Output Excel File"}
-
-        video_json_path = os.path.join(output_folder, "video_step.json")
-        # 保存为 JSON 文件
-        with open(video_json_path, "w", encoding="utf-8") as f:
-            json.dump(image_step_path_dict_video, f, ensure_ascii=False, indent=2)
-
-        request_output_path = os.path.join(output_folder, "request.json")
-        with open(request_output_path, "w", encoding="utf-8") as f:
-            request_dict={"request":request}
-            json.dump(request_dict, f, ensure_ascii=False, indent=2)
-
-
-
-        output_file_video = os.path.join(output_folder, "video_demo.mp4")
-        output_audio_folder= os.path.join(output_folder, "audio")
-
-        md_file_path = os.path.join(log_path, "output.md")
-        if not os.path.exists(md_file_path):
-            print(f"{md_file_path} 不存在，跳过")
-            continue
-
-        eval_log_file_path = os.path.join(log_path, "evaluation.log")
-        request = extract_and_clean_requests(eval_log_file_path)
-
-
-        print("\n--- 開始創建帶字幕和配音的視頻 ---")
-        full_request="The task is: "+request
-        ending_sentence="Thank you for watching!"
-
-        video_title = image_step_dict["video_title"]
-        thematic_opening_line = image_step_dict["thematic_opening_line"]
-        initial_image_file = "./ufo/agents/video/data/title_background.jpg"
-
-        try:
-            create_video_with_subtitles_and_audio(
-                # 開頭場景參數
-                video_title=video_title,
-                thematic_opening_line=thematic_opening_line,
-                initial_image_path=initial_image_file,
-                # 其他參數
-                image_text_map=image_step_path_dict_video,
-                output_video_path=output_file_video,
-                output_audio_folder=output_audio_folder,
-                fps=24,
-                title_font_path=TITLE_FONT_PATH,
-                subtitle_font_path=SUBTITLE_FONT_PATH,
-                # 這是後續內容的字體大小
-                title_font_size=38,
-                subtitle_font_size=32,
-                # 這是為新開頭場景指定的字體大小
-                opening_title_font_size=39,
-                opening_task_font_size=27,
-                lang='en',
-                ending_sentence=ending_sentence
-            )
-
-            print("\n--- 視頻創建完成 ---")
-        except FileNotFoundError as e:
-            print(f"\n錯誤: 創建失敗。請檢查文件路徑是否正確: {e}")
-        except Exception as e:
-            print(f"\n發生未知錯誤: {e}")
+        # # Windows用戶請確保此路徑有效
+        # TITLE_FONT_PATH = 'C:/Windows/Fonts/arialbd.ttf'  # Arial (粗體)
+        # SUBTITLE_FONT_PATH = 'C:/Windows/Fonts/arial.ttf'  # Arial (常規)
+        #
+        # with open(step_output_path, 'r', encoding='utf-8') as f:
+        #     image_step_dict = json.load(f)
+        #
+        #
+        #
+        # # 创建新字典，使用 i 从 1 开始编号
+        # image_step_path_dict_video = {}
+        # i = 1
+        # path=os.path.join(log_path, f"action_step1.png")
+        # text="Here’s the original Excel file that we’ll be working with."
+        # image_step_path_dict_video[path]={"voiceover_script":text,"title":"Original Excel File"}
+        # for key, value in image_step_dict["steps"].items():
+        #     path = os.path.join(log_path, f"action_step{key}_selected_controls_mouse.png")
+        #     image_step_path_dict_video[path]={}
+        #     voiceover_script=value['voiceover_script']
+        #     title = value['title']
+        #     image_step_path_dict_video[path]['voiceover_script'] = f"Step{i}: {voiceover_script}"
+        #     image_step_path_dict_video[path]['title'] = f"Step{i}: {title}"
+        #     i += 1
+        # path = os.path.join(log_path, f"action_step_final.png")
+        # image_step_path_dict_video[path]={"voiceover_script":"You've now successfully completed the task!","title":"Output Excel File"}
+        #
+        # video_json_path = os.path.join(output_folder, "video_step.json")
+        # # 保存为 JSON 文件
+        # with open(video_json_path, "w", encoding="utf-8") as f:
+        #     json.dump(image_step_path_dict_video, f, ensure_ascii=False, indent=2)
+        #
+        # request_output_path = os.path.join(output_folder, "request.json")
+        # with open(request_output_path, "w", encoding="utf-8") as f:
+        #     request_dict={"request":request}
+        #     json.dump(request_dict, f, ensure_ascii=False, indent=2)
+        #
+        #
+        #
+        # output_file_video = os.path.join(output_folder, "video_demo.mp4")
+        # output_audio_folder= os.path.join(output_folder, "audio")
+        #
+        # md_file_path = os.path.join(log_path, "output.md")
+        # if not os.path.exists(md_file_path):
+        #     print(f"{md_file_path} 不存在，跳过")
+        #     continue
+        #
+        # eval_log_file_path = os.path.join(log_path, "evaluation.log")
+        # request = extract_and_clean_requests(eval_log_file_path)
+        #
+        #
+        # print("\n--- 開始創建帶字幕和配音的視頻 ---")
+        # full_request="The task is: "+request
+        # ending_sentence="Thank you for watching!"
+        #
+        # video_title = image_step_dict["video_title"]
+        # thematic_opening_line = image_step_dict["thematic_opening_line"]
+        # initial_image_file = "./ufo/agents/video/data/title_background.jpg"
+        #
+        # try:
+        #     create_video_with_subtitles_and_audio(
+        #         # 開頭場景參數
+        #         video_title=video_title,
+        #         thematic_opening_line=thematic_opening_line,
+        #         initial_image_path=initial_image_file,
+        #         # 其他參數
+        #         image_text_map=image_step_path_dict_video,
+        #         output_video_path=output_file_video,
+        #         output_audio_folder=output_audio_folder,
+        #         fps=24,
+        #         title_font_path=TITLE_FONT_PATH,
+        #         subtitle_font_path=SUBTITLE_FONT_PATH,
+        #         # 這是後續內容的字體大小
+        #         title_font_size=38,
+        #         subtitle_font_size=32,
+        #         # 這是為新開頭場景指定的字體大小
+        #         opening_title_font_size=39,
+        #         opening_task_font_size=27,
+        #         lang='en',
+        #         ending_sentence=ending_sentence
+        #     )
+        #
+        #     print("\n--- 視頻創建完成 ---")
+        # except FileNotFoundError as e:
+        #     print(f"\n錯誤: 創建失敗。請檢查文件路徑是否正確: {e}")
+        # except Exception as e:
+        #     print(f"\n發生未知錯誤: {e}")

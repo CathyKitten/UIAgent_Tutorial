@@ -115,8 +115,11 @@ class DemoGenAgentPrompter(BasicPrompter):
 
             step = log.get("Step")
 
+
             action = log.get("Action")
             print("action_len",len(action))
+            if action==[]:
+                continue
             filter_action_list=["table2markdown", "annotation", "summary", "texts",""]
             # filter_action_list=[""]
             print(action[0]["Function"])
