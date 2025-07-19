@@ -1,13 +1,13 @@
 from pydantic import BaseModel, Field
-from enum import Enum
 import json
 from typing import Optional
 
-# --- (輔助函數，無需修改) ---
+
+# --- (Helper functions, no modification needed) ---
 
 def add_additional_properties_false(schema) -> None:
     """
-    遞迴地將 "additionalProperties": false 添加到 JSON schema 中的所有 object 定義中。
+    Recursively adds "additionalProperties": false to all object definitions in a JSON schema.
     """
     if "type" in schema and schema["type"] == "object":
         schema.setdefault("additionalProperties", False)
@@ -20,9 +20,10 @@ def add_additional_properties_false(schema) -> None:
     if "items" in schema and isinstance(schema["items"], dict):
         add_additional_properties_false(schema["items"])
 
+
 def remove_titles_recursively(schema) -> None:
     """
-    遞迴地從 JSON schema 中的所有對象中刪除 "title" 屬性。
+    Recursively removes the "title" property from all objects in a JSON schema.
     """
     schema.pop("title", None)
     if "properties" in schema:
@@ -34,9 +35,10 @@ def remove_titles_recursively(schema) -> None:
     if "items" in schema and isinstance(schema["items"], dict):
         remove_titles_recursively(schema["items"])
 
+
 def generate_json_schema(model) -> dict:
     """
-    為 Pydantic 模型生成 JSON schema。
+    Generates a JSON schema for a Pydantic model.
     """
     model.model_rebuild(force=True)
     schema = model.model_json_schema()
@@ -45,45 +47,44 @@ def generate_json_schema(model) -> dict:
     remove_titles_recursively(schema)
     return schema
 
-# --- 程式碼修改部分 ---
 
-# 1. 定義一個新的 Pydantic 模型來代表評分結果的結構
+# --- Code Modification Section ---
+
+# 1. Add a shared model to represent "score and reason".
+class ScoreWithReason(BaseModel):
+    """Represents a rating item that includes a score and a reason."""
+    score: int = Field(
+        ...,
+        ge=1,
+        le=5,
+        description="A score from 1 to 5."
+    )
+    reason: str = Field(
+        ...,
+        description="The specific reason for the given score."
+    )
+
+
+# 2. Modify the main model so that each field uses the new ScoreWithReason model.
 class EvaluationScores(BaseModel):
     """
-    定義五個評分維度的資料模型，用於規範 JSON 輸出。
+    Defines a standardized JSON output format where each rating dimension includes a score and a reason.
     """
-    clarity: int = Field(
-        ...,
-        ge=1, le=5,
-        description="Score for clarity, from 1 to 5."
-    )
-    conciseness: int = Field(
-        ...,
-        ge=1, le=5,
-        description="Score for conciseness, from 1 to 5."
-    )
-    completeness: int = Field(
-        ...,
-        ge=1, le=5,
-        description="Score for completeness, from 1 to 5."
-    )
-    sequential_order: int = Field(
-        ...,
-        ge=1, le=5,
-        description="Score for sequential order, from 1 to 5."
-    )
-    # 使用 'alias' 來處理包含連字符的 JSON key
-    text_image_mapping: int = Field(
-        ...,
-        alias="text-image_mapping",
-        ge=1, le=5,
-        description="Score for text-image mapping, from 1 to 5."
-    )
+    understand: ScoreWithReason
+    speed: ScoreWithReason
+    complete_task: ScoreWithReason
+    satisfaction: ScoreWithReason
+    preference: ScoreWithReason
 
 
 if __name__ == "__main__":
     jsonfile = generate_json_schema(EvaluationScores)
-    print(jsonfile)
-    file_path = "../data/steps_schema_questionnaire_score.json"
-    with open(file_path, "w") as file:
+
+    print("--- Generated JSON Schema ---")
+    print(json.dumps(jsonfile, indent=2))
+
+    file_path = "../data/steps_schema_questionnaire_score_subject.json"
+    with open(file_path, "w", encoding='utf-8') as file:
         json.dump(jsonfile, file, indent=4)
+
+    print(f"\n✅ Schema has been successfully generated and saved to {file_path}")
