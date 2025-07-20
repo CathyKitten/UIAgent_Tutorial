@@ -409,7 +409,7 @@ Here is the operation logs and screenshots:
 
 if __name__ == '__main__':
     # IMPORTANT: Set this to the root folder you want to scan.
-    root_folder = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\20250716_bing_search_completed"
+    root_folder = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\20250716_m365_complete"
 
     # Specify the model you want to use
     judge_model_name = 'dev-gpt-41-longco-2025-04-14'
