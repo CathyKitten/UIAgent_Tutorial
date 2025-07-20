@@ -211,6 +211,7 @@ Here is the operation logs and screenshots:
                     try:
                         # Send the request and get the result
                         result_str = send_request_ufo(model_name, message, schema=schema_judge)
+                        time.sleep(30)
                         break
                     except Exception as e:
                         print_with_color(f"Error: {e}", "red")
@@ -385,6 +386,7 @@ Here is the operation logs and screenshots:
                     try:
                         # Send the request and get the result
                         result_str = send_request_ufo(model_name, message, schema=schema_judge)
+                        time.sleep(30)
                         break
                     except Exception as e:
                         print_with_color(f"Error: {e}", "red")
