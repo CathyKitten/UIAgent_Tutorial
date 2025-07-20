@@ -56,7 +56,7 @@ def process_and_evaluate_steps_object(root_directory, model_name,schema):
         # We are looking for the specific file 'video_step.json'
         if 'video_step.json' in files:
             # Check if the parent directory is named 'video_demo'
-            if os.path.basename(root) == 'video_demo':
+            if os.path.basename(root) == 'video':
                 json_path = os.path.join(root, 'video_step.json')
                 request_path=os.path.join(root, 'request.json')
                 # request_path=r"C:\Users\v-yuhangxie\OneDrive - Microsoft\qabench\qabench\logs\chunk1\add_a_special_character_or_symbol_4f364db0-912b-46b3-8282-2d8dd49c336a\document\request.json"
@@ -70,7 +70,7 @@ def process_and_evaluate_steps_object(root_directory, model_name,schema):
                 try:
                     with open(json_path, 'r', encoding='utf-8') as f:
                         steps_data = json.load(f)
-                        print(steps_data)
+                        # print(steps_data)
                 except (json.JSONDecodeError, FileNotFoundError) as e:
                     print(f"Error reading or parsing {json_path}: {e}")
                     continue
@@ -184,7 +184,9 @@ Here is the operation logs and screenshots:
 
                 for image_path, description in middle_steps:
                     # Add the text description for the step
-                    step_title, step_explanation = description
+                    step_title = description["title"]
+                    step_explanation = description["voiceover_script"]
+
                     user_content.append({
                         "type": "text",
                         "text": f"Step: {step_title}\nDescription: {step_explanation}"
@@ -210,12 +212,13 @@ Here is the operation logs and screenshots:
                     try:
                         # Send the request and get the result
                         result_str = send_request_ufo(model_name, message, schema=schema_judge)
+                        time.sleep(20)
                         break
                     except Exception as e:
                         print_with_color(f"Error: {e}", "red")
                         print_with_color("Retrying...", "yellow")
                         try_count -= 1
-                        time.sleep(30)
+                        time.sleep(20)
                         continue
 
                 # Print the formatted result
@@ -258,7 +261,7 @@ def process_and_evaluate_steps_subject(root_directory, model_name,schema):
                 try:
                     with open(json_path, 'r', encoding='utf-8') as f:
                         steps_data = json.load(f)
-                        print(steps_data)
+                        # print(steps_data)
                 except (json.JSONDecodeError, FileNotFoundError) as e:
                     print(f"Error reading or parsing {json_path}: {e}")
                     continue
@@ -360,7 +363,10 @@ Here is the operation logs and screenshots:
 
                 for image_path, description in middle_steps:
                     # Add the text description for the step
-                    step_title, step_explanation = description
+                    # print(description)
+                    step_title = description["title"]
+                    step_explanation = description["voiceover_script"]
+
                     user_content.append({
                         "type": "text",
                         "text": f"Step: {step_title}\nDescription: {step_explanation}"
@@ -386,6 +392,7 @@ Here is the operation logs and screenshots:
                     try:
                         # Send the request and get the result
                         result_str = send_request_ufo(model_name, message, schema=schema_judge)
+                        time.sleep(30)
                         break
                     except Exception as e:
                         print_with_color(f"Error: {e}", "red")
@@ -407,7 +414,7 @@ Here is the operation logs and screenshots:
 
 if __name__ == '__main__':
     # IMPORTANT: Set this to the root folder you want to scan.
-    root_folder = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\20250716_bing_search_completed"
+    root_folder = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\20250716_m365_complete"
 
     # Specify the model you want to use
     judge_model_name = 'dev-gpt-41-longco-2025-04-14'

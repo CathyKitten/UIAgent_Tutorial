@@ -211,6 +211,7 @@ Here is the operation logs and screenshots:
                     try:
                         # Send the request and get the result
                         result_str = send_request_ufo(model_name, message, schema=schema_judge)
+                        time.sleep(30)
                         break
                     except Exception as e:
                         print_with_color(f"Error: {e}", "red")
@@ -385,6 +386,7 @@ Here is the operation logs and screenshots:
                     try:
                         # Send the request and get the result
                         result_str = send_request_ufo(model_name, message, schema=schema_judge)
+                        time.sleep(30)
                         break
                     except Exception as e:
                         print_with_color(f"Error: {e}", "red")
@@ -407,7 +409,7 @@ Here is the operation logs and screenshots:
 
 if __name__ == '__main__':
     # IMPORTANT: Set this to the root folder you want to scan.
-    root_folder = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\20250716_bing_search_completed"
+    root_folder = r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\20250716_m365_complete"
 
     # Specify the model you want to use
     judge_model_name = 'dev-gpt-41-longco-2025-04-14'
