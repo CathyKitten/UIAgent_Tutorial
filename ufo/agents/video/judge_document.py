@@ -238,7 +238,7 @@ Here are the titles, descriptions, and screenshots for each step in the document
                 # Print the formatted result
                 try:
                     result_json = json.loads(result_str)
-                    output_result_file = os.path.join(root, "document_judge_result_object.json")
+                    output_result_file = os.path.join(root, "document_judge_result_object_0721.json")
                     with open(output_result_file, "w", encoding="utf-8") as f:
                         json.dump(result_json, f, ensure_ascii=False, indent=2)
                     print(result_json)
@@ -414,7 +414,7 @@ Here are the titles, descriptions, and screenshots for each step in the document
                 # Print the formatted result
                 try:
                     result_json = json.loads(result_str)
-                    output_result_file = os.path.join(root, "document_judge_result_subject.json")
+                    output_result_file = os.path.join(root, "document_judge_result_subject_0721.json")
                     with open(output_result_file, "w", encoding="utf-8") as f:
                         json.dump(result_json, f, ensure_ascii=False, indent=2)
                     print(result_json)
