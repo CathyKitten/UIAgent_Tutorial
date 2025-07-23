@@ -1,5 +1,6 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
+import time
 import shutil
 import json
 import os
@@ -112,7 +113,7 @@ class TutorialGenAgent(BasicAgent):
         message = self.message_constructor(
             log_path=log_path, request=request, eva_all_screenshots=eva_all_screenshots
         )
-        result, cost = self.get_response_schema(
+        result,prompt_tokens,completion_tokens,cost,time_taken_seconds = self.get_response_schema_cost(
             message=message, schema=schema, namescope="app", use_backup_engine=True
         )
 
@@ -120,7 +121,7 @@ class TutorialGenAgent(BasicAgent):
             f.write(result)
             print_with_color(f"Successfully write tutorial content to: {output_path}", color="green")
 
-        return result, cost
+        return result,prompt_tokens,completion_tokens,cost,time_taken_seconds
 
     def process_comfirmation(self) -> None:
         """
@@ -160,23 +161,25 @@ if __name__ == "__main__":
             print(f"{md_file_path} 不存在，跳过")
             continue
 
-        # ⭐️ 2. 檢查是否到達了指定的起始資料夾
-        if folder_name == start_folder:
-            print(f"🚀 已找到起始點: {folder_name}。開始處理後續所有資料夾。")
-            start_processing = True
-
-        # ⭐️ 3. 只有當旗標為 True 時，才執行判斷和複製邏輯
-        if not start_processing:
-            print(f"⏭️  跳過資料夾: {folder_name} (尚未到達起始點)")
-            continue
+        # # ⭐️ 2. 檢查是否到達了指定的起始資料夾
+        # if folder_name == start_folder:
+        #     print(f"🚀 已找到起始點: {folder_name}。開始處理後續所有資料夾。")
+        #     start_processing = True
+        #
+        # # ⭐️ 3. 只有當旗標為 True 時，才執行判斷和複製邏輯
+        # if not start_processing:
+        #     print(f"⏭️  跳過資料夾: {folder_name} (尚未到達起始點)")
+        #     continue
         request = extract_and_clean_requests(md_file_path)
 
         # 创建 output_folder 路径：log_path 下的 "document"
-        output_folder = os.path.join(log_path, "document")
+        output_folder = os.path.join(log_path, "document_cost")
         os.makedirs(output_folder, exist_ok=True)  # 如果不存在就创建
 
         # 生成两个输出文件的完整路径
         step_output_path = os.path.join(output_folder, "document_demo_step.json")
+        step_cost_path = os.path.join(output_folder, "document_demo_cost.json")
+
         request_output_path = os.path.join(output_folder, "request.json")
         with open(request_output_path, "w", encoding="utf-8") as f:
             request_dict={"request":request}
@@ -185,14 +188,16 @@ if __name__ == "__main__":
         with open('./ufo/agents/video/data/steps_schema_document.json', 'r') as file:
             schema = json.load(file)
 
-        results = gen_agent.generate(
-            request=request, log_path=log_path, output_path=step_output_path, eva_all_screenshots=True, schema=schema
+        result,prompt_tokens,completion_tokens,cost,time_taken_seconds = gen_agent.generate(
+            request=request, log_path=log_path, output_path=step_output_path,eva_all_screenshots=True, schema=schema
         )
+        cost_dict = {"llm_request":{"prompt_tokens":prompt_tokens,"completion_tokens":completion_tokens,"cost":cost,"time_taken_seconds":time_taken_seconds}}
         print("-----------------------------------")
 
         with open(step_output_path, 'r', encoding='utf-8') as f:
             image_step_dict = json.load(f)
 
+        time_start = time.time()
         task_title = image_step_dict["task_title"]
         task_title = "Help Document: " + task_title
 
@@ -255,3 +260,9 @@ if __name__ == "__main__":
         output_file_document_html_base64 = os.path.join(output_folder, "help_document_base64.html")
         create_html_document(document_json_path, task_title, output_file_document_html)
         create_html_document_base64(document_json_path, task_title, output_file_document_html_base64)
+
+        time_end = time.time()
+        time_taken_seconds = time_end - time_start
+        cost_dict["gen_document_time"]=time_taken_seconds
+        with open(step_cost_path, "w", encoding="utf-8") as f:
+            json.dump(cost_dict, f, ensure_ascii=False, indent=2)

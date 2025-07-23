@@ -3,7 +3,7 @@
 
 # $env:PYTHONPATH="C:\Users\v-yuhangxie\UIAgent_Tutorial"; python .\ufo\agents\video\demo_gen_agent_video.py
 import shutil
-
+import time
 from typing import Any, Dict, Optional, Tuple
 
 from ufo.agents.agent.basic import BasicAgent
@@ -103,7 +103,8 @@ class TutorialGenAgent(BasicAgent):
         return EvaluatonAgentStatus
 
     def generate(
-        self, request: str, log_path: str, output_path: str, eva_all_screenshots: bool = True ,schema: dict = None) -> Tuple[Dict[str, str], float]:
+            self, request: str, log_path: str, output_path: str, eva_all_screenshots: bool = True, schema: dict = None
+    ) -> Tuple[Dict[str, str], float]:
         """
         Evaluate the task completion.
         :param log_path: The path to the log file.
@@ -113,17 +114,15 @@ class TutorialGenAgent(BasicAgent):
         message = self.message_constructor(
             log_path=log_path, request=request, eva_all_screenshots=eva_all_screenshots
         )
-        result, cost = self.get_response_schema(
-            message=message,schema=schema, namescope="app", use_backup_engine=True
+        result,prompt_tokens,completion_tokens,cost,time_taken_seconds = self.get_response_schema_cost(
+            message=message, schema=schema, namescope="app", use_backup_engine=True
         )
 
-
-
-        with open(output_path, "w",encoding="utf-8") as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             f.write(result)
             print_with_color(f"Successfully write tutorial content to: {output_path}", color="green")
 
-        return result, cost
+        return result,prompt_tokens,completion_tokens,cost,time_taken_seconds
 
     def process_comfirmation(self) -> None:
         """
@@ -188,29 +187,36 @@ if __name__ == "__main__":
 
 
             # 创建 output_folder 路径：log_path 下的 "video_demo"
-            output_folder = os.path.join(log_path, "video")
+            output_folder = os.path.join(log_path, "video_cost")
             os.makedirs(output_folder, exist_ok=True)  # 如果不存在就创建
 
             # 生成两个输出文件的完整路径
             step_output_path = os.path.join(output_folder, "video_demo_step.json")
+            cost_output_path = os.path.join(output_folder, "video_demo_cost.json")
 
             with open('./ufo/agents/video/data/steps_schema_video.json', 'r') as file:
                 schema = json.load(file)
 
-            if not os.path.exists(step_output_path):
-                results = gen_agent.generate(
-                    request=request,
-                    log_path=log_path,
-                    output_path=step_output_path,
-                    eva_all_screenshots=True,
-                    schema=schema
-                )
+            # if not os.path.exists(step_output_path):
+            #     result,prompt_tokens,completion_tokens,cost,time_taken_seconds = gen_agent.generate(
+            #         request=request,
+            #         log_path=log_path,
+            #         output_path=step_output_path,
+            #         eva_all_screenshots=True,
+            #         schema=schema
+            #     )
 
+            result, prompt_tokens, completion_tokens, cost, time_taken_seconds = gen_agent.generate(
+                request=request,
+                log_path=log_path,
+                output_path=step_output_path,
+                eva_all_screenshots=True,
+                schema=schema
+            )
 
-
-
-
-
+            cost_dict = {
+                "llm_request": {"prompt_tokens": prompt_tokens, "completion_tokens": completion_tokens, "cost": cost,
+                                "time_taken_seconds": time_taken_seconds}}
 
 
             # Windows用戶請確保此路徑有效
@@ -220,7 +226,7 @@ if __name__ == "__main__":
             with open(step_output_path, 'r', encoding='utf-8') as f:
                 image_step_dict = json.load(f)
 
-
+            time_start = time.time()
 
             # 创建新字典，使用 i 从 1 开始编号
             image_step_path_dict_video = {}
@@ -299,3 +305,9 @@ if __name__ == "__main__":
                 print(f"\n錯誤: 創建失敗。請檢查文件路徑是否正確: {e}")
             except Exception as e:
                 print(f"\n發生未知錯誤: {e}")
+
+            time_end = time.time()
+            time_taken_seconds = time_end - time_start
+            cost_dict["gen_document_time"] = time_taken_seconds
+            with open(cost_output_path, "w", encoding="utf-8") as f:
+                json.dump(cost_dict, f, ensure_ascii=False, indent=2)

@@ -7,7 +7,7 @@ from ufo.utils import print_with_color
 
 from ..config.config import Config
 from .base import BaseService
-from .openai_utils import send_request_ufo
+from .openai_utils import send_request_ufo,send_request_ufo_cost
 import time
 
 configs = Config.get_instance().config_data
@@ -38,6 +38,7 @@ def get_completion(
             responses = send_request_ufo(
                 model_name, messages
             )
+
             return responses, 0
         except Exception as e:
             print_with_color(f"Error: {e}", "red")
@@ -82,8 +83,36 @@ def get_completion_schema(
             try_count -= 1
             time.sleep(8)
             continue
+    return responses, 0
+
+def get_completion_schema_cost(
+        messages, schema,agent: str = "APP", use_backup_engine: bool = True, configs=configs
+) -> Tuple[str, float]:
+    """
+    Get completion for the given messages.
+    :param messages: List of messages to be used for completion.
+    :param agent: Type of agent. Possible values are 'hostagent', 'appagent' or 'backup'.
+    :param use_backup_engine: Flag indicating whether to use the backup engine or not.
+    :return: A tuple containing the completion response and the cost.
+    """
 
 
+    responses = ""
+    try_count = 20
+    while try_count > 0:
+        try:
+            # 'dev-gpt-4o-vision-2024-05-13'
+            model_name = 'dev-gpt-41-longco-2025-04-14'
+            result,prompt_tokens,completion_tokens,cost,time_taken_seconds = send_request_ufo_cost(
+                model_name, messages,schema
+            )
+            return result,prompt_tokens,completion_tokens,cost,time_taken_seconds
+        except Exception as e:
+            print_with_color(f"Error: {e}", "red")
+            print_with_color("Retrying...", "yellow")
+            try_count -= 1
+            time.sleep(8)
+            continue
     return responses, 0
 
 def get_completions(

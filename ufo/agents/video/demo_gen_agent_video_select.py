@@ -103,7 +103,8 @@ class TutorialGenAgent(BasicAgent):
         return EvaluatonAgentStatus
 
     def generate(
-        self, request: str, log_path: str, output_path: str, eva_all_screenshots: bool = True ,schema: dict = None) -> Tuple[Dict[str, str], float]:
+            self, request: str, log_path: str, output_path: str, eva_all_screenshots: bool = True, schema: dict = None
+    ) -> Tuple[Dict[str, str], float]:
         """
         Evaluate the task completion.
         :param log_path: The path to the log file.
@@ -113,17 +114,37 @@ class TutorialGenAgent(BasicAgent):
         message = self.message_constructor(
             log_path=log_path, request=request, eva_all_screenshots=eva_all_screenshots
         )
-        result, cost = self.get_response_schema(
-            message=message,schema=schema, namescope="app", use_backup_engine=True
+        result,prompt_tokens,completion_tokens,cost,time_taken_seconds = self.get_response_schema_cost(
+            message=message, schema=schema, namescope="app", use_backup_engine=True
         )
 
+        # 2. 將 JSON 字串轉換為字典
+        try:
+            # 使用 json.loads() 將 string 解析為 dict
+            final_dict = json.loads(result)
+        except json.JSONDecodeError as e:
+            print(f"❌ JSON 解析錯誤: {e}")
+            # 如果解析失敗，可以建立一個包含錯誤訊息的字典
+            final_dict = {"error": "Invalid JSON format", "original_string": result}
 
+        # 3. 將其他結果加入字典中
+        # 檢查 final_dict 是否為字典類型，以防解析失敗
+        if isinstance(final_dict, dict):
+            additional_data = {
+                "prompt_tokens": prompt_tokens,
+                "completion_tokens": completion_tokens,
+                "cost": cost,
+                "time_taken_seconds": f"{time_taken_seconds:.4f}"  # 可選：格式化時間
+            }
 
-        with open(output_path, "w",encoding="utf-8") as f:
-            f.write(result)
+        final_dict.update(additional_data)
+        json_string = json.dumps(final_dict, indent=4, ensure_ascii=False)
+
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(json_string)
             print_with_color(f"Successfully write tutorial content to: {output_path}", color="green")
 
-        return result, cost
+        return result,prompt_tokens,completion_tokens,cost,time_taken_seconds
 
     def process_comfirmation(self) -> None:
         """
@@ -155,7 +176,7 @@ if __name__ == "__main__":
 
     # 路径配置
     base_path = r"C:\Users\v-yuhangxie\UFO_ssb_0708\logs\20250716_bing_search_complete"
-    copy_path=r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\20250716_bing_search_completed"
+    copy_path=r"C:\Users\v-yuhangxie\OneDrive - Microsoft\log_result\20250716_bing_search_completed_time"
     # 检查 base_path 是否存在
     if not os.path.isdir(base_path):
         print(f"错误: 基础路径 '{base_path}' 不存在或不是一个文件夹。")
@@ -175,6 +196,8 @@ if __name__ == "__main__":
                 print(f"{md_file_path} 不存在，跳过")
                 continue
             request = extract_and_clean_requests(md_file_path)
+
+
 
             # # ⭐️ 2. 檢查是否到達了指定的起始資料夾
             # if folder_name == start_folder:
